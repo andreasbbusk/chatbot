@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Client Server - EJS</title>
+</head>
+
+<body>
+    <form method="POST" action="/submit">
+        <input type="text" name="name" placeholder="Please enter your name" />
+        <input type="number" name="age" placeholder="Indtast din alder" />
+        <button type="submit">Send</button>
+    </form>
+
+    <% if (name) { %>
+        <h1>Hello <%= name %> (<%= age %> år)👋</h1>
+        <% } %>
+
+            <% if (error) { %>
+                <p style="color: red;">
+                    <%= error %>
+                </p>
+                <% } %>
+
+                    <ul>
+                        <% names.forEach(name=> { %>
+                            <li>
+                                <%= name %>
+                            </li>
+                            <% }); %>
+                    </ul>
+
+                    <p>Antal navne: <%= names.length %>
+                    </p>
+
+                    <form method="POST" action="/">
+                        <button type="submit">Ryd</button>
+                    </form>
+</body>
+
+</html>
