@@ -6,37 +6,56 @@
     <link rel="stylesheet" type="text/css" href="/public/styles.css" />
 </head>
 
-<body>
-    <form method="POST" action="/submit" class="form">
-        <input type="text" name="name" placeholder="Please enter your name" />
-        <input type="number" name="age" placeholder="Indtast din alder" />
-        <button type="submit">Send</button>
-    </form>
+<body class="min-h-screen bg-gray-100 py-8">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+        <form method="POST" action="/submit" class="space-y-4">
+            <input type="text" name="name" placeholder="Indtast dit navn"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+            <input type="number" name="age" placeholder="Indtast din alder"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+            <button type="submit"
+                class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">Send</button>
+        </form>
 
-    <% if (name) { %>
-        <h1>Hello <%= name %> (<%= age %> år)👋</h1>
-        <% } %>
+        <% if (name) { %>
+            <div class="mt-6">
+                <h1 class="text-xl font-bold">Hello <%= name %> (<%= age %> år)👋</h1>
+            </div>
+            <% } %>
 
-            <% if (error) { %>
-                <p style="color: red;">
-                    <%= error %>
-                </p>
-                <% } %>
 
-                    <ul class="names">
-                        <% names.forEach(name=> { %>
-                            <li>
-                                <%= name %>
-                            </li>
-                            <% }); %>
-                    </ul>
+                <% if (error) { %>
+                    <div class="mt-4 p-4 bg-red-100 border border-red-400 rounded-lg">
+                        <p class="text-red-700">
+                            <%= error %>
+                        </p>
+                    </div>
+                    <% } %>
 
-                    <p>Antal navne: <%= names.length %>
-                    </p>
+                        <div class="mt-6">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-3">Navneliste:</h3>
+                            <ul class="space-y-2">
+                                <% names.forEach(name=> { %>
+                                    <li class="bg-gray-50 px-3 py-2 rounded border">
+                                        <%= name %>
+                                    </li>
+                                    <% }); %>
+                            </ul>
 
-                    <form method="POST" action="/">
-                        <button type="submit">Slet alle</button>
-                    </form>
+                            <p class="mt-4 text-sm text-gray-600">
+                                Antal navne: <span class="font-semibold">
+                                    <%= names.length %>
+                                </span>
+                            </p>
+
+                            <form method="POST" action="/" class="mt-4">
+                                <button type="submit"
+                                    class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition duration-200">
+                                    Slet alle
+                                </button>
+                            </form>
+                        </div>
+    </div>
 </body>
 
 </html>
