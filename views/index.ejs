@@ -3,10 +3,11 @@
 
 <head>
     <title>Client Server - EJS</title>
+    <link rel="stylesheet" type="text/css" href="/public/styles.css" />
 </head>
 
 <body>
-    <form method="POST" action="/submit">
+    <form method="POST" action="/submit" class="form">
         <input type="text" name="name" placeholder="Please enter your name" />
         <input type="number" name="age" placeholder="Indtast din alder" />
         <button type="submit">Send</button>
@@ -22,7 +23,7 @@
                 </p>
                 <% } %>
 
-                    <ul>
+                    <ul class="names">
                         <% names.forEach(name=> { %>
                             <li>
                                 <%= name %>
@@ -34,7 +35,7 @@
                     </p>
 
                     <form method="POST" action="/">
-                        <button type="submit">Ryd</button>
+                        <button type="submit">Slet alle</button>
                     </form>
 </body>
 

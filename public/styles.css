@@ -1,3 +1,6 @@
-.hello {
-    color: red;
+.names {
+    color: blue;
+    font-size: 1.5em;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
 }
