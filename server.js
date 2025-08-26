@@ -16,17 +16,6 @@ function sanitizeInput(input) {
     .trim(); // Remove whitespace at start and end
 }
 
-// Advanced sanitization version
-function sanitizeInputAdvanced(input) {
-  if (typeof input !== "string") return "";
-
-  return input
-    .replace(/[<>'"]/g, "") // Remove potentially dangerous characters
-    .replace(/script/gi, "") // Remove "script" word
-    .slice(0, 500) // Limit length to 500 characters
-    .trim();
-}
-
 app.set("view engine", "ejs"); // Set EJS as the templating engine
 app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
 

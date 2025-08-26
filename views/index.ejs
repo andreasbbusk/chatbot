@@ -1,50 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="da">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot - EJS</title>
     <link rel="stylesheet" type="text/css" href="/public/styles.css" />
 </head>
 
-<body class="py-8 min-h-screen bg-gray-100">
-    <div class="p-6 mx-auto max-w-md bg-white rounded-lg shadow-md">
-        <h1 class="mb-6 text-2xl font-bold text-center">Chatbot</h1>
+<body>
+    <main class="py-8 min-h-screen bg-gray-100">
+        <section class="p-6 mx-auto max-w-md bg-white rounded-lg shadow-md" role="application"
+            aria-label="Chatbot Interface">
+            <h1 class="mb-6 text-2xl font-bold text-center">Chatbot</h1>
 
-        <!-- Chat messages -->
-        <div class="overflow-y-auto mb-6 max-h-96">
-            <% if (messages.length> 0) { %>
-                <% messages.forEach(message=> { %>
-                    <div
-                        class="mb-3 p-3 rounded-lg <%= message.sender === 'Bruger' ? 'bg-blue-100 ml-4' : 'bg-gray-100 mr-4' %>">
-                        <strong>
-                            <%= message.sender %>:
-                        </strong>
-                        <%= message.text %>
-                    </div>
-                    <% }); %>
-                        <% } else { %>
-                            <p class="text-center text-gray-500">Ingen beskeder endnu. Start en samtale!</p>
-                            <% } %>
-        </div>
+            <!-- Chat messages -->
+            <section class="overflow-y-auto mb-4 max-h-96 no-scrollbar" role="log" aria-live="polite"
+                aria-label="Chat beskeder" id="chat-messages">
+                <% if (messages.length> 0) { %>
+                    <% messages.forEach((message, index)=> { %>
+                        <article
+                            class="mb-3 p-3 rounded-lg <%= message.sender === 'Bruger' ? 'bg-blue-100 ml-4' : 'bg-gray-100 mr-4' %>"
+                            <% if (index===messages.length - 1) { %>id="latest-message"<% } %>>
+                                <strong>
+                                    <%= message.sender %>:
+                                </strong>
+                                <%= message.text %>
+                        </article>
+                        <% }); %>
+                            <% } else { %>
+                                <p class="text-center text-gray-500" role="status">Ingen beskeder endnu. Start en
+                                    samtale!</p>
+                                <% } %>
+            </section>
 
+            <!-- Error message -->
+            <% if (typeof error !=='undefined' && error) { %>
+                <aside class="p-2 mb-3 text-red-800 bg-red-100 rounded-lg border border-red-400" role="alert"
+                    aria-live="assertive">
+                    <strong>Fejl:</strong>
+                    <%= error %>
+                </aside>
+                <% } %>
 
-        <% if (typeof error !=='undefined' && error) { %>
-            <div class="p-2 mb-3 text-red-800 bg-red-100 rounded-lg border border-red-400">
-                <strong>Fejl:</strong>
-                <%= error %>
-            </div>
-            <% } %>
+                    <!-- Chat form -->
+                    <form method="POST" action="/chat" class="space-y-4" aria-label="Send besked">
+                        <label for="message-input" class="sr-only">Skriv din besked</label>
+                        <!-- max length of 500 to match the max length of a message -->
+                        <input type="text" id="message-input" name="message" placeholder="Skriv din besked her" required
+                            maxlength="500" class="px-3 py-2 w-full rounded-lg border border-gray-300" />
+                        <button type="submit" aria-label="Send besked til chatbot"
+                            class="px-4 py-2 w-full text-white bg-blue-500 rounded-lg transition duration-200 hover:bg-blue-600">
+                            Send
+                        </button>
+                    </form>
 
-                <!-- Chat form -->
-                <form method="POST" action="/chat" class="space-y-4">
-                    <input type="text" name="message" placeholder="Skriv din besked her" required
-                        class="px-3 py-2 w-full rounded-lg border border-gray-300" />
-                    <button type="submit"
-                        class="px-4 py-2 w-full text-white bg-blue-500 rounded-lg transition duration-200 hover:bg-blue-600">Send</button>
-                </form>
+        </section>
+    </main>
 
+    <script>
+        // Adding client-side JS in EJS since it's not possible to add it in the server.js file due to it being a server-side language
+        // Client-side JavaScript for auto scroll to latest message and focus on input
+        document.addEventListener('DOMContentLoaded', function () {
+            const messageInput = document.getElementById('message-input');
+            const form = document.querySelector('form');
 
-    </div>
+            // Focus input on page load
+            messageInput.focus();
+
+            // Auto-scroll to latest message if exists
+            const latestMessage = document.getElementById('latest-message');
+            if (latestMessage) {
+                latestMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Simple keyboard navigation - Enter submits form
+            messageInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    form.submit();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
