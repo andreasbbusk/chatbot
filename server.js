@@ -2,8 +2,13 @@ import express from "express"; // Import express framework
 import responses from "./responses.js";
 
 const app = express();
-
 const PORT = 3000;
+const messages = [];
+
+// Middleware setup
+app.set("view engine", "ejs"); // Set EJS as the templating engine
+app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
+app.use("/public", express.static("public"));
 
 // Input sanitization function
 function sanitizeInput(input) {
@@ -16,13 +21,6 @@ function sanitizeInput(input) {
     .trim(); // Remove whitespace at start and end
 }
 
-app.set("view engine", "ejs"); // Set EJS as the templating engine
-app.use(express.urlencoded({ extended: true })); // For parsing application/x-www-form-urlencoded
-
-app.use("/public", express.static("public"));
-
-const messages = [];
-
 // GET - render the index page
 app.get("/", (req, res) => {
   res.render("index", { messages, botReply: "", error: "" });
@@ -31,7 +29,6 @@ app.get("/", (req, res) => {
 // POST-request - handle chat messages
 app.post("/chat", (req, res) => {
   let userMessage = req.body.message;
-
   // Sanitize input FIRST
   userMessage = sanitizeInput(userMessage);
 
@@ -53,6 +50,71 @@ app.post("/chat", (req, res) => {
     const lowerMessage = userMessage.toLowerCase();
     let foundResponse = false;
 
+    // First priority with if else statements
+    if (
+      lowerMessage === "godmorgen bot" ||
+      lowerMessage === "godmorgen chatbot"
+    ) {
+      botReply = "Godmorgen! Hvad kan jeg hjælpe dig med i dag?";
+      foundResponse = true;
+    } else if (
+      lowerMessage.includes("tusind tak") ||
+      lowerMessage.includes("mange mange tak")
+    ) {
+      botReply = "Du er meget velkommen!";
+      foundResponse = true;
+    }
+    // More complex conditions with if/else
+    if (!foundResponse) {
+
+      // Emotional conditions
+      if (
+        lowerMessage.includes("jeg er") &&
+        (lowerMessage.includes("trist") || lowerMessage.includes("ked af det"))
+      ) {
+        botReply =
+          "Det lyder som om du har det svært lige nu. Vil du fortælle mig hvad der er galt? 💙";
+        foundResponse = true;
+      } else if (
+        lowerMessage.includes("jeg er") &&
+        (lowerMessage.includes("glad") || lowerMessage.includes("lykkelig"))
+      ) {
+        botReply =
+          "Hvor dejligt at høre! Jeg bliver også glad af at høre du har det godt! 😊 Hvad gør dig så glad?";
+        foundResponse = true;
+      }
+      // Questions vs statements
+      else if (lowerMessage.includes("kan du") && lowerMessage.includes("?")) {
+        botReply = "Jeg kan prøve! Hvad vil du gerne have hjælp til?";
+        foundResponse = true;
+      }
+    }
+
+    // Swtich statements for more complex, exact conditions
+    if (!foundResponse) {
+      switch (lowerMessage) {
+        case "hej bot":
+        case "hej chatbot":
+          botReply =
+            "Hej! Dejligt at du bruger mit navn! Hvordan kan jeg hjælpe dig?";
+          foundResponse = true;
+          break;
+
+        case "hvem er du":
+        case "hvad er du":
+          botReply =
+            "Jeg er din personlige chatbot-assistent! Jeg er her for at chatte og hjælpe dig! 🤖";
+          foundResponse = true;
+          break;
+
+        case "hvor kommer du fra":
+          botReply =
+            "Jeg kommer fra kode og kreativitet! Jeg blev skabt for at hjælpe dig! 💻";
+          foundResponse = true;
+          break;
+      }
+    }
+
     // Loop through all response objects
     for (const response of responses) {
       // Check if any keywords match
@@ -70,9 +132,17 @@ app.post("/chat", (req, res) => {
       if (foundResponse) break;
     }
 
-    // Fallback if no keyword matches
     if (!foundResponse) {
-      botReply = `Du skrev: "${userMessage}". Prøv at skrive "hej" eller "hjælp"!`;
+      // Fallback if no keyword matches 
+      if (lowerMessage.includes("?")) {
+        botReply = `Interessant spørgsmål! Jeg er ikke sikker på svaret til "${userMessage}". Prøv at spørge om noget andet eller skriv "hjælp"! 🤔`;
+      }
+      else if (lowerMessage.length > 100) {
+        botReply = `Det var en lang besked! Jeg forstod ikke alt, men prøv at spørge mere enkelt. Skriv "hjælp" for ideer! 📝`;
+      }
+      else {
+        botReply = `Hmm, "${userMessage}" er nyt for mig. Prøv "hej", "hjælp" eller stil et spørgsmål! 💭`;
+      }
     }
   }
 
