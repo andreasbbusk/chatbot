@@ -5,8 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
+    "start": "nodemon server.js",
+    "dev": "nodemon --watch server.js",
     "build-css": "tailwindcss -i ./public/input.css -o ./public/styles.css --watch",
     "build-css-prod": "tailwindcss -i ./public/input.css -o ./public/styles.css --minify"
   },
@@ -23,6 +23,7 @@
     "express": "^4.21.2"
   },
   "devDependencies": {
+    "nodemon": "^3.1.10",
     "tailwindcss": "^4.1.12"
   }
 }
