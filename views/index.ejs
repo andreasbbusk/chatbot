@@ -80,6 +80,11 @@
                                     Send
                                 </button>
                             </form>
+                            <form action="/clear" method="post" style="margin-top: 0.7rem;">
+                                <button type=" submit"
+                                    class="px-4 py-2 w-full text-white bg-blue-500 rounded-lg transition duration-200 hover:bg-blue-600">
+                                    Nulstil</button>
+                            </form>
 
         </section>
         <section class="p-5 mx-auto my-5 max-w-md bg-white rounded-lg shadow-md">
@@ -124,6 +129,23 @@
                 <p class="mt-3 text-sm text-gray-600">Prøv at skrive noget relateret til disse emner, eller besøg <a
                         href="/stats" class="text-blue-600 hover:underline">statistik-siden</a> for at se hvilke
                     kategorier der bruges mest!</p>
+            </div>
+        </section>
+
+        <!-- Statistics section -->
+        <section class="p-5 mx-auto my-5 max-w-md bg-white rounded-lg shadow-md">
+            <h3 class="mb-4 text-lg font-bold text-gray-800">Chat Statistik</h3>
+            <div class="space-y-2">
+                <p class="text-sm text-gray-700">
+                    <strong>Antal beskeder i chatten:</strong>
+                    <%= totalMessages %>
+                </p>
+                <p class="text-sm text-gray-700">
+                    <strong>Brugerbeskeder:</strong>
+                    <%= userCount %> |
+                        <strong>Botbeskeder:</strong>
+                        <%= botCount %>
+                </p>
             </div>
         </section>
     </main>

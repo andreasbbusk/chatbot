@@ -1,14 +1,10 @@
 import express from "express"; // Import express framework
-import { sanitizeInput } from "./src/utilities/inputHelpers.js";
-import {
-  validateChatMessage,
-  validateAddResponse,
-} from "./src/utilities/inputHelpers.js";
-import {
-  generateBotResponse,
-  addNewResponse,
-} from "./src/utilities/chatLogic.js";
 import responses from "./src/data/responses.js";
+import { generateBotResponse } from "./src/utilities/chatLogic.js";
+import {
+  sanitizeInput,
+  validateChatMessage,
+} from "./src/utilities/inputHelpers.js";
 
 const app = express();
 const PORT = 3000;
@@ -32,7 +28,20 @@ app.get("/", (req, res) => {
     success = "Nyt svar tilføjet! Prøv at skrive nøgleordet i chatten.";
   }
 
-  res.render("index", { messages, botReply: "", error, success });
+  // Calculate statistics
+  const totalMessages = messages.length;
+  const userCount = messages.filter((msg) => msg.sender === "Bruger").length;
+  const botCount = messages.filter((msg) => msg.sender === "Bot").length;
+
+  res.render("index", {
+    messages,
+    botReply: "",
+    error,
+    success,
+    totalMessages,
+    userCount,
+    botCount,
+  });
 });
 
 // POST-request - handle chat messages
@@ -71,10 +80,27 @@ app.post("/chat", (req, res) => {
       timestamp: botTimestamp,
       category: matchedCategory, // Use the matched category from response
     });
+
+    // Restrict to maximum 10 messages - remove oldest if there are too many
+    while (messages.length > 10) {
+      messages.shift(); // Remove the oldest message
+    }
   }
 
+  // Calculate statistics
+  const totalMessages = messages.length;
+  const userCount = messages.filter((msg) => msg.sender === "Bruger").length;
+  const botCount = messages.filter((msg) => msg.sender === "Bot").length;
+
   // Send data to template
-  res.render("index", { messages, botReply, error });
+  res.render("index", {
+    messages,
+    botReply,
+    error,
+    totalMessages,
+    userCount,
+    botCount,
+  });
 });
 
 app.post("/add-response", (req, res) => {
@@ -130,5 +156,11 @@ app.get("/stats", (req, res) => {
 
   res.render("stats", { categoryStats, messages });
 });
+
+app.post("/clear", (req, res) => {
+  messages.length = 0;
+  res.redirect("/");
+});
+
 // Listen on port 3000
 app.listen(PORT, () => console.log("Server running at" + PORT));
