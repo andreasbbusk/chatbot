@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot - EJS</title>
     <link rel="stylesheet" type="text/css" href="/public/styles.css" />
+    <link rel="stylesheet" type="text/css" href="/public/input.css">
 </head>
 
 <body>
@@ -15,51 +16,70 @@
             <h1 class="mb-6 text-2xl font-bold text-center">Chatbot</h1>
 
             <!-- Chat messages -->
-            <section class="overflow-y-auto mb-4 max-h-96 no-scrollbar" role="log" aria-live="polite"
+            <div class="overflow-y-auto my-5 max-h-96 no-scrollbar" role="log" aria-live="polite"
                 aria-label="Chat beskeder" id="chat-messages">
                 <% if (messages.length> 0) { %>
                     <% messages.forEach((message, index)=> { %>
                         <article
-                            class="mb-3 p-3 rounded-lg flex flex-row align-center <%= message.sender === 'Bruger' ? 'bg-blue-100 ml-4' : 'bg-gray-100 mr-4' %>"
+                            class="max-w-full mb-3 p-3 rounded-lg <%= message.sender === 'Bruger' ? 'bg-blue-100 ml-4' : 'bg-gray-100 mr-4' %> category-<%= message.category || 'ukategoriseret' %>"
                             <% if (index===messages.length - 1) { %>id="latest-message"<% } %>>
-                                <strong>
-                                    <%= message.sender %>:
-                                </strong>
-                                <%= message.text %>
-                                    <span class="mr-auto text-sm text-gray-500">
+                                <div class="flex flex-row justify-between items-center mb-2 message-header">
+                                    <div class="flex flex-row gap-2 items-center">
+                                        <strong class="sender">
+                                            <%= message.sender %>:
+                                        </strong>
+                                        <% if (message.category && message.sender==='Bot' ) { %>
+                                            <span class="px-2 py-1 text-xs text-blue-800 bg-blue-200 rounded-lg">
+                                                <%= message.category %>
+                                            </span>
+                                            <% } %>
+                                    </div>
+                                    <span class="flex-shrink-0 text-xs text-gray-500 timestamp">
                                         <%= new Date(message.timestamp).toLocaleString('da-DK', { hour: '2-digit' ,
-                                            minute: '2-digit' }) %>
-                                            </>
-
-
+                                            minute: '2-digit' , second: '2-digit' }) %>
+                                    </span>
+                                </div>
+                                <div class="">
+                                    <%= message.text %>
+                                </div>
                         </article>
                         <% }); %>
                             <% } else { %>
                                 <p class="text-center text-gray-500" role="status">Ingen beskeder endnu. Start en
                                     samtale!</p>
                                 <% } %>
-            </section>
+            </div>
 
-            <!-- Error message -->
-            <% if (typeof error !=='undefined' && error) { %>
-                <aside class="p-2 mb-3 text-red-800 bg-red-100 rounded-lg border border-red-400" role="alert"
-                    aria-live="assertive">
-                    <strong>Fejl:</strong>
-                    <%= error %>
+            <!-- Success message -->
+            <% if (typeof success !=='undefined' && success) { %>
+                <aside class="p-2 mb-3 text-green-800 bg-green-100 rounded-lg border border-green-400" role="alert"
+                    aria-live="polite">
+                    <strong>Succes:</strong>
+                    <%= success %>
                 </aside>
                 <% } %>
 
-                    <!-- Chat form -->
-                    <form method="POST" action="/chat" class="space-y-4" aria-label="Send besked">
-                        <label for="message-input" class="sr-only">Skriv din besked</label>
-                        <!-- max length of 500 to match the max length of a message -->
-                        <input type="text" id="message-input" name="message" placeholder="Skriv din besked her" required
-                            maxlength="500" class="px-3 py-2 w-full rounded-lg border border-gray-300" />
-                        <button type="submit" aria-label="Send besked til chatbot"
-                            class="px-4 py-2 w-full text-white bg-blue-500 rounded-lg transition duration-200 hover:bg-blue-600">
-                            Send
-                        </button>
-                    </form>
+                    <!-- Error message -->
+                    <% if (typeof error !=='undefined' && error) { %>
+                        <aside class="p-2 mb-3 text-red-800 bg-red-100 rounded-lg border border-red-400" role="alert"
+                            aria-live="assertive">
+                            <strong>Fejl:</strong>
+                            <%= error %>
+                        </aside>
+                        <% } %>
+
+                            <!-- Chat form -->
+                            <form method="POST" action="/chat" class="space-y-4" aria-label="Send besked">
+                                <label for="message-input" class="sr-only">Skriv din besked</label>
+                                <!-- max length of 500 to match the max length of a message -->
+                                <input type="text" id="message-input" name="message" placeholder="Skriv din besked her"
+                                    required maxlength="500"
+                                    class="px-3 py-2 w-full rounded-lg border border-gray-300" />
+                                <button type="submit" aria-label="Send besked til chatbot"
+                                    class="px-4 py-2 w-full text-white bg-blue-500 rounded-lg transition duration-200 hover:bg-blue-600">
+                                    Send
+                                </button>
+                            </form>
 
         </section>
         <section class="p-5 mx-auto my-5 max-w-md bg-white rounded-lg shadow-md">
@@ -85,6 +105,26 @@
                     Tilføj nyt svar
                 </button>
             </form>
+        </section>
+
+        <!-- Category help section - shows available categories -->
+        <section class="p-5 mx-auto my-5 max-w-md bg-white rounded-lg shadow-md">
+            <div class="category-help">
+                <h4 class="mb-4 text-lg font-bold text-gray-800">💡 Jeg kan snakke om:</h4>
+                <div class="flex flex-wrap gap-2 category-tags">
+                    <span class="px-3 py-1 text-sm text-green-800 bg-green-100 rounded-full tag">Hilsner</span>
+                    <span class="px-3 py-1 text-sm text-orange-800 bg-orange-100 rounded-full tag">Mad & drikke</span>
+                    <span class="px-3 py-1 text-sm text-purple-800 bg-purple-100 rounded-full tag">Følelser</span>
+                    <span class="px-3 py-1 text-sm text-blue-800 bg-blue-100 rounded-full tag">Spørgsmål</span>
+                    <span class="px-3 py-1 text-sm text-pink-800 bg-pink-100 rounded-full tag">Komplimenter</span>
+                    <span class="px-3 py-1 text-sm text-yellow-800 bg-yellow-100 rounded-full tag">Vejr</span>
+                    <span class="px-3 py-1 text-sm text-indigo-800 bg-indigo-100 rounded-full tag">Hobbyer</span>
+                    <span class="px-3 py-1 text-sm text-red-800 bg-red-100 rounded-full tag">Høflighed</span>
+                </div>
+                <p class="mt-3 text-sm text-gray-600">Prøv at skrive noget relateret til disse emner, eller besøg <a
+                        href="/stats" class="text-blue-600 hover:underline">statistik-siden</a> for at se hvilke
+                    kategorier der bruges mest!</p>
+            </div>
         </section>
     </main>
 

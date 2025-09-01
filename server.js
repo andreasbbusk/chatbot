@@ -8,6 +8,7 @@ import {
   generateBotResponse,
   addNewResponse,
 } from "./src/utilities/chatLogic.js";
+import responses from "./src/data/responses.js";
 
 const app = express();
 const PORT = 3000;
@@ -20,7 +21,18 @@ app.use("/public", express.static("public"));
 
 // GET - render the index page
 app.get("/", (req, res) => {
-  res.render("index", { messages, botReply: "", error: "" });
+  let error = "";
+  let success = "";
+
+  // Handle query parameters for feedback
+  if (req.query.error === "empty_fields") {
+    error = "Både nøgleord og svar skal udfyldes!";
+  }
+  if (req.query.success === "response_added") {
+    success = "Nyt svar tilføjet! Prøv at skrive nøgleordet i chatten.";
+  }
+
+  res.render("index", { messages, botReply: "", error, success });
 });
 
 // POST-request - handle chat messages
@@ -36,19 +48,29 @@ app.post("/chat", (req, res) => {
   const validation = validateChatMessage(userMessage);
   let { error, botReply } = validation;
 
+  let matchedCategory = "ukategoriseret"; // Default category: uncategorized
+
   if (validation.isValid) {
-    // Normal chat logic here...
-    botReply = generateBotResponse(userMessage);
+    // Normal chat logic here - now returns object with botReply and matchedCategory
+    const responseData = generateBotResponse(userMessage);
+    botReply = responseData.botReply;
+    matchedCategory = responseData.matchedCategory;
   }
 
-  // Save messages only if there's no error
+  // Save messages only if there's no error (now includes category info)
   if (!error) {
     messages.push({
       sender: "Bruger",
       text: userMessage,
       timestamp: userTimestamp,
+      category: "bruger-input", // Category: user-input
     });
-    messages.push({ sender: "Bot", text: botReply, timestamp: botTimestamp });
+    messages.push({
+      sender: "Bot",
+      text: botReply,
+      timestamp: botTimestamp,
+      category: matchedCategory, // Use the matched category from response
+    });
   }
 
   // Send data to template
@@ -58,19 +80,55 @@ app.post("/chat", (req, res) => {
 app.post("/add-response", (req, res) => {
   const { keyword, answer } = req.body;
 
-  // Sanitize and validate input
-  const validation = validateAddResponse(keyword, answer);
-
-  if (!validation.isValid) {
-    console.log("Fejl: Tomme felter");
+  // Validate input
+  if (!keyword || !answer || !keyword.trim() || !answer.trim()) {
+    console.log("Error: Missing or empty fields");
     return res.redirect("/?error=empty_fields");
   }
 
-  const { cleanKeyword, cleanAnswer } = validation;
-  addNewResponse(cleanKeyword, cleanAnswer);
+  // Clean input
+  const cleanKeyword = keyword.trim().toLowerCase();
+  const cleanAnswer = answer.trim();
+
+  // Find existing response or create new one
+  const existingResponse = responses.find((resp) =>
+    resp.keywords.some((kw) => kw === cleanKeyword)
+  );
+
+  if (existingResponse) {
+    existingResponse.answers.push(cleanAnswer);
+    console.log(`Added answer to existing keyword: ${cleanKeyword}`);
+  } else {
+    responses.push({
+      keywords: [cleanKeyword],
+      answers: [cleanAnswer],
+      category: "bruger-lært",
+    });
+    console.log(`Created new keyword: ${cleanKeyword}`);
+  }
+
+  // Track user-learned responses
+  global.userLearnedResponses = global.userLearnedResponses || [];
+  global.userLearnedResponses.push({
+    keyword: cleanKeyword,
+    answer: cleanAnswer,
+    timestamp: new Date(),
+  });
 
   res.redirect("/?success=response_added");
 });
 
+// Statistics route - simplified approach
+app.get("/stats", (req, res) => {
+  // Count messages per category (only bot messages)
+  const categoryStats = {};
+  messages.forEach((msg) => {
+    if (msg.category && msg.sender === "Bot") {
+      categoryStats[msg.category] = (categoryStats[msg.category] || 0) + 1;
+    }
+  });
+
+  res.render("stats", { categoryStats, messages });
+});
 // Listen on port 3000
 app.listen(PORT, () => console.log("Server running at" + PORT));

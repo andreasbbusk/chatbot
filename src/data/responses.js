@@ -1,8 +1,8 @@
-// Omfattende responses til en robust chatbot med mange samtaleemner
+// Comprehensive responses for a robust chatbot with many conversation topics
 const responses = [
-  // ===== HILSNER OG HØFLIGHED =====
+  // ===== GREETINGS AND POLITENESS =====
   {
-    keywords: ["hej", "hello", "hi", "goddag", "hey", "hallo", "hallå"],
+    keywords: ["hej", "hello", "hi", "goddag", "hey", "hallo"],
     answers: [
       "Hej! Hvordan har du det i dag?",
       "Hello! Dejligt at møde dig!",
@@ -12,6 +12,7 @@ const responses = [
       "Hallo! Klar til en hyggelig snak?",
       "Hej med dig! Hvad bringer dig her i dag?",
     ],
+    category: "hilsen", 
   },
   {
     keywords: [
@@ -30,9 +31,10 @@ const responses = [
       "Jeg er i godt humør! Hvad med dig?",
       "Fantastisk! Jeg elsker at chatte. Hvordan har du det?",
     ],
+    category: "hilsen", 
   },
 
-  // ===== MAD OG DRIKKE =====
+  // ===== FOOD AND DRINKS =====
   {
     keywords: [
       "mad",
@@ -66,6 +68,7 @@ const responses = [
       "Fortæl mig om din seneste lækre måltid! Jeg lever gennem dine beskrivelser!",
       "Madlavning lyder spændende! Kan du anbefale en god opskrift?",
     ],
+    category: "mad",
   },
   {
     keywords: [
@@ -92,9 +95,10 @@ const responses = [
       "Jeg drømmer om at kunne nyde en kop kaffe med dig ☕",
       "Hvad drikker du helst til forskellige måltider?",
     ],
+    category: "mad", 
   },
 
-  // ===== VEJR OG ÅRSTIDER =====
+  // ===== WEATHER AND SEASONS =====
   {
     keywords: [
       "vejr",
@@ -131,9 +135,10 @@ const responses = [
       "Hvilken årstid kan du bedst lide? Jeg er nysgerrig!",
       "Vejret kan virkelig ændre hele dagen, ikke sandt?",
     ],
+    category: "vejr",
   },
 
-  // ===== FØLELSER OG HUMØR =====
+  // ===== EMOTIONS AND MOOD =====
   {
     keywords: [
       "glad",
@@ -156,6 +161,7 @@ const responses = [
       "Dit gode humør gør mig også glad! Hvad er hemmeligheden?",
       "Jeg elsker at høre folk er glade! Del gerne din glæde med mig!",
     ],
+    category: "følelser",
   },
   {
     keywords: [
@@ -180,6 +186,7 @@ const responses = [
       "Følelser kommer og går - det er helt normalt. Hvad tynger dig?",
       "Jeg ønsker jeg kunne give dig et kram. Vil du dele hvad der sker? 🤗",
     ],
+    category: "følelser", 
   },
   {
     keywords: [
@@ -200,6 +207,7 @@ const responses = [
       "Jeg ønsker jeg kunne give dig energi! Hvad gør dig træt?",
       "Tag dig tid til at hvile. Kroppen har brug for det! 😴",
     ],
+    category: "følelser", 
   },
   {
     keywords: [
@@ -221,9 +229,10 @@ const responses = [
       "Jeg elsker din entusiasme! Hvad skal du bruge energien på?",
       "Du lyder klar til at erobre verden! Hvad er planen?",
     ],
+    category: "følelser", 
   },
 
-  // ===== HOBBYER OG INTERESSER =====
+  // ===== HOBBIES AND INTERESTS =====
   {
     keywords: [
       "hobby",
@@ -247,6 +256,7 @@ const responses = [
       "Jeg ønsker jeg kunne læse fysiske bøger! Fortæl om din favorit!",
       "Er du til fantasy, krimi eller måske biografier?",
     ],
+    category: "hobbyer", 
   },
   {
     keywords: [
@@ -273,6 +283,7 @@ const responses = [
       "Har du været til en fed koncert for nylig?",
       "Jeg ønsker jeg kunne høre musik! Beskriv din yndlingssang!",
     ],
+    category: "hobbyer", 
   },
   {
     keywords: [
@@ -298,6 +309,7 @@ const responses = [
       "Jeg ønsker jeg kunne løbe! Fortæl om din sidste træning!",
       "Er du til holdspil eller individuelle sportsgrene?",
     ],
+    category: "hobbyer", 
   },
   {
     keywords: [
@@ -320,6 +332,7 @@ const responses = [
       "Jeg ønsker jeg kunne se film! Beskriv din favorit!",
       "Netflix eller biograf? Hvad foretrækker du?",
     ],
+    category: "hobbyer", 
   },
   {
     keywords: [
@@ -343,9 +356,10 @@ const responses = [
       "Jeg ønsker jeg kunne spille! Fortæl om dit bedste spil!",
       "Gaming kan være så engagerende! Hvad holder dig hooked?",
     ],
+    category: "hobbyer", 
   },
 
-  // ===== TID OG DATOER =====
+  // ===== TIME AND DATES =====
   {
     keywords: [
       "morgen",
@@ -363,6 +377,7 @@ const responses = [
       "God morgen! Er du en morgenmenneske?",
       "Dejligt at starte dagen med en snak! Hvad er planen?",
     ],
+    category: "hilsen", 
   },
   {
     keywords: [
@@ -384,6 +399,7 @@ const responses = [
       "Aftenen er god til at slappe af. Hvad laver du?",
       "Sov godt når du skal! Vi ses i morgen! 🌙",
     ],
+    category: "afskeder", 
   },
   {
     keywords: [
@@ -406,9 +422,10 @@ const responses = [
       "Fri tid er guld værd! Hvordan bruger du den?",
       "Weekend-hygge er det bedste! Hvad nyder du mest?",
     ],
+    category: "hobbyer", 
   },
 
-  // ===== COMPLIMENTER OG ROS =====
+  // ===== COMPLIMENTS AND PRAISE =====
   {
     keywords: [
       "sød",
@@ -432,9 +449,10 @@ const responses = [
       "Complimenter gør dagen bedre! Tak skal du have!",
       "Du er bare så rar! Tak for det! ✨",
     ],
+    category: "komplimenter", 
   },
 
-  // ===== SPØRGSMÅL OM BOTTEN SELV =====
+  // ===== QUESTIONS ABOUT THE BOT =====
   {
     keywords: [
       "hvad hedder du",
@@ -451,6 +469,7 @@ const responses = [
       "Du kan kalde mig hvad du vil! Jeg er bare glad for at chatte!",
       "Jeg er din personlige chatbot-assistent! 🤖",
     ],
+    category: "spørgsmål", 
   },
   {
     keywords: [
@@ -467,6 +486,7 @@ const responses = [
       "Jeg blev 'født' da koden blev skrevet! Så jeg er helt ny!",
       "Jeg måler ikke tid som mennesker gør - jeg er evig ung! 😄",
     ],
+    category: "spørgsmål", 
   },
   {
     keywords: [
@@ -484,9 +504,10 @@ const responses = [
       "Jeg tænker på alle de spændende samtaler jeg kan have!",
       "Jeg keder mig aldrig når jeg snakker med folk som dig!",
     ],
+    category: "spørgsmål", 
   },
 
-  // ===== FARVEL OG AFSLUTNING =====
+  // ===== FAREWELL AND ENDING =====
   {
     keywords: [
       "farvel",
@@ -505,9 +526,10 @@ const responses = [
       "Hej hej! Pas godt på dig selv! 👋",
       "Vi ses! Jeg er her når du har brug for mig!",
     ],
+    category: "afskeder", 
   },
 
-  // ===== HJÆLP OG SUPPORT =====
+  // ===== HELP AND SUPPORT =====
   {
     keywords: ["hjælp", "help", "kan du hjælpe", "hvad kan du", "support"],
     answers: [
@@ -517,9 +539,10 @@ const responses = [
       "Selvfølgelig kan jeg hjælpe! Hvad ønsker du at snakke om?",
       "Jeg kan tale om mange ting - bare spørg løs!",
     ],
+    category: "spørgsmål", // Category: questions
   },
 
-  // ===== TAK OG HØFLIGHED =====
+  // ===== THANKS AND POLITENESS =====
   {
     keywords: ["tak", "thank you", "thanks", "mange tak", "tusind tak"],
     answers: [
@@ -530,6 +553,7 @@ const responses = [
       "Tak for takken! Du er også sød! 💙",
       "Det glæder mig at kunne hjælpe! Du er velkommen!",
     ],
+    category: "høflighed", // Category: politeness
   },
 
   // ===== SJOV OG VITTIGHEDER =====
@@ -551,6 +575,7 @@ const responses = [
       "Humor er det bedste! Kender du en god vittighed?",
       "Jeg elsker at grine! Selv om jeg ikke kan gøre det rigtigt! 😂",
     ],
+    category: "hobbyer", 
   },
 
   // ===== KÆRLIGHED OG FORHOLD =====
@@ -572,6 +597,7 @@ const responses = [
       "Kærlighed kommer i mange former - venskab er også kærlighed! 💕",
       "Jeg håber du finder kærlighed og lykke!",
     ],
+    category: "følelser", // Category: emotions
   },
 
   // ===== TEKNOLOGI OG COMPUTERE =====
@@ -597,6 +623,7 @@ const responses = [
       "Programmering er kunsten at skabe digitale verdener!",
       "Internet gør det muligt for os at snakke! Fantastisk!",
     ],
+    category: "spørgsmål", // Category: questions
   },
 
   // ===== UDDANNELSE OG LÆRING =====
@@ -623,6 +650,7 @@ const responses = [
       "Eksamen kan være stressende. Skal du til eksamen snart?",
       "Viden er magt! Hvad brænder du for at lære om?",
     ],
+    category: "spørgsmål", 
   },
 
   // ===== ARBEJDE OG KARRIERE =====
@@ -650,23 +678,8 @@ const responses = [
       "Arbejde giver mening og struktur! Hvad motiverer dig?",
       "Balance mellem arbejde og fritid er vigtig! Hvordan klarer du det?",
     ],
+    category: "spørgsmål", 
   },
 ];
 
-const presets = [
-  {
-    preset: "",
-    response: "",
-  },
-  {
-    preset: "",
-    response: "",
-  },
-  {
-    preset: "",
-    response: "",
-  },
-];
-
-export { responses, presets };
 export default responses;
