@@ -92,6 +92,8 @@ app.post("/chat", (req, res) => {
   const userCount = messages.filter((msg) => msg.sender === "Bruger").length;
   const botCount = messages.filter((msg) => msg.sender === "Bot").length;
 
+  res.redirect("/");
+
   // Send data to template
   res.render("index", {
     messages,
