@@ -7,6 +7,7 @@
     <title>Chatbot - EJS</title>
     <link rel="stylesheet" type="text/css" href="/public/styles.css" />
     <link rel="stylesheet" type="text/css" href="/public/input.css">
+    <script src="/public/script.js" defer></script>
 </head>
 
 <body>
@@ -149,31 +150,6 @@
             </div>
         </section>
     </main>
-
-    <script>
-        // Adding client-side JS in EJS since it's not possible to add it in the server.js file due to it being a server-side language
-        // Client-side JavaScript for auto scroll to latest message and focus on input
-        document.addEventListener('DOMContentLoaded', function () {
-            const messageInput = document.getElementById('message-input');
-            const form = document.querySelector('form');
-
-            // Focus input on page load
-            messageInput.focus();
-
-            // Auto-scroll to latest message if exists
-            const latestMessage = document.getElementById('latest-message');
-            if (latestMessage) {
-                latestMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-
-            // Simple keyboard navigation - Enter submits form
-            messageInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    form.submit();
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>
