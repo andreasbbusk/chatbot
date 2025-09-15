@@ -1,3 +1,7 @@
+body {
+    overscroll-behavior: none;
+}
+
 .no-scrollbar { 
     scrollbar-width: none; 
     -ms-overflow-style: none; 
