@@ -4,7 +4,7 @@ async function loadStats() {
         const data = await response.json();
         displayStats(data.categoryStats);
     } catch (error) {
-        console.error('Kunne ikke indlæse statistik:', error);
+        console.error('Kunne ikke indlÃ¦se statistik:', error);
     }
 }
 
@@ -27,7 +27,7 @@ function displayStats(categoryStats) {
             </div>
         `).join('')}
         <div class="mt-4">
-            <p class="text-sm"><strong>Mest populære kategori:</strong> ${mostPopular}</p>
+            <p class="text-sm"><strong>Mest populÃ¦re kategori:</strong> ${mostPopular}</p>
         </div>
     `;
 }

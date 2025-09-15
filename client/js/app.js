@@ -6,37 +6,69 @@ async function loadMessages() {
   updateUI(data);
 }
 
+// This function is used to create the different message elements to populate HTML with API data ...
+// ... This approach is used for seperation of concerns and to make the code more readable.
+function createMessageElement(
+  sender,
+  text,
+  timestamp,
+  categoryTag,
+  senderClass,
+  category,
+  isLatest
+) {
+  const template = document.getElementById("message-template");
+  const messageElement = template.content.cloneNode(true);
+
+  const article = messageElement.querySelector("article");
+  article.className += ` ${senderClass} category-${category}`;
+
+  if (isLatest) {
+    article.id = "latest-message";
+  }
+
+  messageElement.querySelector(".sender").textContent = `${sender}:`;
+  messageElement.querySelector(".category-tag").innerHTML = categoryTag;
+  messageElement.querySelector(".timestamp").textContent = timestamp;
+  messageElement.querySelector(".message-text").textContent = text;
+
+  return messageElement;
+}
+
+// Function to update the UI with the API data...
 function updateUI(data) {
   const chatMessages = document.getElementById("chat-messages");
   if (data.messages.length === 0) {
-    chatMessages.innerHTML = '<p class="text-center text-gray-500">Ingen beskeder endnu. Start en samtale!</p>';
+    chatMessages.innerHTML = "";
   } else {
-    chatMessages.innerHTML = data.messages
-      .map((message, index) => {
-        const isUser = message.sender === "Bruger";
-        const senderClass = isUser ? "bg-blue-100 ml-4" : "bg-gray-100 mr-4";
-        const isLatest = index === data.messages.length - 1;
-        const categoryTag = message.category && message.sender === "Bot" 
-          ? `<span class="px-2 py-1 text-xs text-blue-800 bg-blue-200 rounded-lg">${message.category}</span>` 
-          : "";
-        const timestamp = new Date(message.timestamp).toLocaleTimeString("da-DK");
-        
-        return `
-          <article class="max-w-full mb-3 p-3 rounded-lg ${senderClass} category-${message.category || "ukategoriseret"}" ${isLatest ? 'id="latest-message"' : ""}>
-            <div class="flex flex-row justify-between items-center mb-2">
-              <div class="flex flex-row gap-2 items-center">
-                <strong>${message.sender}:</strong>
-                ${categoryTag}
-              </div>
-              <span class="flex-shrink-0 text-xs text-gray-500">${timestamp}</span>
-            </div>
-            <div>${message.text}</div>
-          </article>
-        `;
-      })
-      .join("");
+    chatMessages.innerHTML = "";
 
-    document.getElementById("latest-message")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    data.messages.forEach((message, index) => {
+      const isUser = message.sender === "Bruger";
+      const senderClass = isUser ? "bg-blue-100 ml-4" : "bg-gray-100 mr-4";
+      const isLatest = index === data.messages.length - 1;
+      const categoryTag =
+        message.category && message.sender === "Bot"
+          ? `<span class="px-2 py-1 text-xs text-blue-800 bg-blue-200 rounded-lg">${message.category}</span>`
+          : "";
+      const timestamp = new Date(message.timestamp).toLocaleTimeString("da-DK");
+      // Create the message element to populate HTML with API data...
+      const messageElement = createMessageElement(
+        message.sender,
+        message.text,
+        timestamp,
+        categoryTag,
+        senderClass,
+        message.category || "ukategoriseret",
+        isLatest
+      );
+
+      chatMessages.appendChild(messageElement);
+    });
+
+    document
+      .getElementById("latest-message")
+      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   document.getElementById("total-messages").textContent = data.totalMessages;
@@ -44,6 +76,7 @@ function updateUI(data) {
   document.getElementById("bot-count").textContent = data.botCount;
 }
 
+// Function to show the messages...
 function showMessage(type, text) {
   const element = document.getElementById(`${type}-message`);
   const textElement = document.getElementById(`${type}-text`);
@@ -51,8 +84,10 @@ function showMessage(type, text) {
   element.classList.remove("hidden");
   setTimeout(() => element.classList.add("hidden"), 3000);
 }
+// Post request to the API to send a message...
+const chatForm = document.getElementById("chat-form");
 
-document.getElementById("chat-form").addEventListener("submit", async (e) => {
+chatForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const messageInput = document.getElementById("message-input");
   const message = messageInput.value.trim();
@@ -79,36 +114,39 @@ document.getElementById("chat-form").addEventListener("submit", async (e) => {
   }
 });
 
-document
-  .getElementById("response-form")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const keyword = document.getElementById("keyword").value.trim();
-    const answer = document.getElementById("answer").value.trim();
+// Post request to the API to add a new response...
+const responseForm = document.getElementById("response-form");
 
-    const response = await fetch(`${API_BASE_URL}/api/responses`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ keyword, answer }),
-    });
-    const data = await response.json();
+responseForm.addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const keyword = document.getElementById("keyword").value.trim();
+  const answer = document.getElementById("answer").value.trim();
 
-    if (data.error) {
-      showMessage("error", "Både nøgleord og svar skal udfyldes!");
-    } else {
-      showMessage(
-        "success",
-        "Nyt svar tilføjet! Prøv at skrive nøgleordet i chatten."
-      );
-      document.getElementById("keyword").value = "";
-      document.getElementById("answer").value = "";
-    }
+  const response = await fetch(`${API_BASE_URL}/api/responses`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ keyword, answer }),
   });
+  const data = await response.json();
 
+  if (data.error) {
+    showMessage(error, "Både nøgleord og svar skal udfyldes!");
+  } else {
+    showMessage(
+      "success",
+      "Nyt svar tilføjet! Prøv at skrive nøgleordet i chatten."
+    );
+    document.getElementById("keyword").value = "";
+    document.getElementById("answer").value = "";
+  }
+});
+
+// Delete request to the API to clear the messages...
 document.getElementById("clear-button").addEventListener("click", async () => {
   await fetch(`${API_BASE_URL}/api/messages`, { method: "DELETE" });
   loadMessages();
 });
 
 document.getElementById("message-input").focus();
+
 loadMessages();
