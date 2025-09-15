@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="py-8 min-h-screen bg-gray-100">
+        <section class="p-6 mx-auto max-w-md bg-white rounded-lg shadow-md">
+            <h1 class="mb-6 text-2xl font-bold text-center">Chatbot</h1>
+
+            <div class="overflow-y-auto my-5 max-h-96 no-scrollbar" id="chat-messages">
+                <p class="text-center text-gray-500" id="no-messages">Ingen beskeder endnu. Start en samtale!</p>
+            </div>
+
+            <div id="success-message" class="hidden p-2 mb-3 text-green-800 bg-green-100 rounded-lg border border-green-400">
+                <strong>Succes:</strong> <span id="success-text"></span>
+            </div>
+
+            <div id="error-message" class="hidden p-2 mb-3 text-red-800 bg-red-100 rounded-lg border border-red-400">
+                <strong>Fejl:</strong> <span id="error-text"></span>
+            </div>
+
+            <form id="chat-form" class="space-y-4">
+                <input type="text" id="message-input" placeholder="Skriv din besked her" required maxlength="500" class="px-3 py-2 w-full rounded-lg border border-gray-300" />
+                <button type="submit" class="px-4 py-2 w-full text-white bg-blue-500 rounded-lg transition duration-200 hover:bg-blue-600">Send</button>
+            </form>
+
+            <button id="clear-button" class="px-4 py-2 mt-3 w-full text-white bg-blue-500 rounded-lg transition duration-200 hover:bg-blue-600">Nulstil</button>
+        </section>
+
+        <section class="p-5 mx-auto my-5 max-w-md bg-white rounded-lg shadow-md">
+            <h2 class="mb-4 text-lg font-bold text-gray-800">Lær botten noget nyt!</h2>
+            <form id="response-form" class="flex flex-col space-y-4">
+                <div class="mb-4">
+                    <label for="keyword" class="block mb-1 font-bold text-gray-800">Nøgleord:</label>
+                    <input class="px-3 py-2 w-full text-sm rounded border border-gray-300" type="text" id="keyword" placeholder="fx 'kage' eller 'computere'" required maxlength="50" />
+                    <small class="block mt-1 text-xs text-gray-600">Ordet som skal trigger svaret</small>
+                </div>
+                <div class="mb-4">
+                    <label for="answer" class="block mb-1 font-bold text-gray-800">Svar:</label>
+                    <input class="px-3 py-2 w-full text-sm rounded border border-gray-300" type="text" id="answer" placeholder="fx 'Jeg elsker chokoladekage!'" required maxlength="200" />
+                    <small class="block mt-1 text-xs text-gray-600">Hvad botten skal svare når ordet bruges</small>
+                </div>
+                <button type="submit" class="px-5 py-2 w-full text-sm text-white bg-blue-600 rounded transition duration-200 hover:bg-blue-700">Tilføj nyt svar</button>
+            </form>
+        </section>
+
+        <section class="p-5 mx-auto my-5 max-w-md bg-white rounded-lg shadow-md">
+            <div class="category-help">
+                <h4 class="mb-4 text-lg font-bold text-gray-800">💡 Jeg kan snakke om:</h4>
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 text-sm text-green-800 bg-green-100 rounded-full">Hilsner</span>
+                    <span class="px-3 py-1 text-sm text-orange-800 bg-orange-100 rounded-full">Mad & drikke</span>
+                    <span class="px-3 py-1 text-sm text-purple-800 bg-purple-100 rounded-full">Følelser</span>
+                    <span class="px-3 py-1 text-sm text-blue-800 bg-blue-100 rounded-full">Spørgsmål</span>
+                    <span class="px-3 py-1 text-sm text-pink-800 bg-pink-100 rounded-full">Komplimenter</span>
+                    <span class="px-3 py-1 text-sm text-yellow-800 bg-yellow-100 rounded-full">Vejr</span>
+                    <span class="px-3 py-1 text-sm text-indigo-800 bg-indigo-100 rounded-full">Hobbyer</span>
+                    <span class="px-3 py-1 text-sm text-red-800 bg-red-100 rounded-full">Høflighed</span>
+                </div>
+                <p class="mt-3 text-sm text-gray-600">Prøv at skrive noget relateret til disse emner, eller besøg <a href="stats.html" class="text-blue-600 hover:underline">statistik-siden</a> for at se hvilke kategorier der bruges mest!</p>
+            </div>
+        </section>
+
+        <section class="p-5 mx-auto my-5 max-w-md bg-white rounded-lg shadow-md">
+            <h3 class="mb-4 text-lg font-bold text-gray-800">Chat Statistik</h3>
+            <div class="space-y-2" id="stats-section">
+                <p class="text-sm text-gray-700">Antal beskeder i chatten: <span id="total-messages">0</span></p>
+                <p class="text-sm text-gray-700">Brugerbeskeder: <span id="user-count">0</span> | Botbeskeder: <span id="bot-count">0</span></p>
+            </div>
+        </section>
+    </main>
+    <script src="js/app.js"></script>
+</body>
+</html>
