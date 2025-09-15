@@ -2,6 +2,10 @@ const API_BASE_URL = "http://localhost:3000";
 
 async function loadMessages() {
   const response = await fetch(`${API_BASE_URL}/api/messages`);
+  if (!response.ok) {
+    console.error(`Failed to load messages: ${response.status}`);
+    return;
+  }
   const data = await response.json();
   updateUI(data);
 }
@@ -99,6 +103,12 @@ chatForm.addEventListener("submit", async (e) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message }),
   });
+  
+  if (!response.ok) {
+    showMessage("error", `Server fejl: ${response.status}`);
+    return;
+  }
+  
   const data = await response.json();
 
   if (data.error) {
@@ -127,10 +137,16 @@ responseForm.addEventListener("submit", async function (e) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ keyword, answer }),
   });
+  
+  if (!response.ok) {
+    showMessage("error", `Server fejl: ${response.status}`);
+    return;
+  }
+  
   const data = await response.json();
 
   if (data.error) {
-    showMessage(error, "Både nøgleord og svar skal udfyldes!");
+    showMessage("error", "Både nøgleord og svar skal udfyldes!");
   } else {
     showMessage(
       "success",
@@ -143,7 +159,11 @@ responseForm.addEventListener("submit", async function (e) {
 
 // Delete request to the API to clear the messages...
 document.getElementById("clear-button").addEventListener("click", async () => {
-  await fetch(`${API_BASE_URL}/api/messages`, { method: "DELETE" });
+  const response = await fetch(`${API_BASE_URL}/api/messages`, { method: "DELETE" });
+  if (!response.ok) {
+    showMessage("error", `Fejl ved sletning: ${response.status}`);
+    return;
+  }
   loadMessages();
 });
 
