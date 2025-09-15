@@ -39,7 +39,7 @@ function createMessageElement(
 function updateUI(data) {
   const chatMessages = document.getElementById("chat-messages");
   if (data.messages.length === 0) {
-    chatMessages.innerHTML = "";
+    chatMessages.innerHTML;
   } else {
     chatMessages.innerHTML = "";
 
