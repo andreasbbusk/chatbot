@@ -17,21 +17,33 @@ function createMessageElement(
   text,
   timestamp,
   categoryTag,
-  senderClass,
   category,
   isLatest
 ) {
   const template = document.getElementById("message-template");
   const messageElement = template.content.cloneNode(true);
 
-  const article = messageElement.querySelector("article");
-  article.className += ` ${senderClass} category-${category}`;
+  const messageDiv = messageElement.querySelector("div");
+  messageDiv.className += ` category-${category}`;
 
   if (isLatest) {
-    article.id = "latest-message";
+    messageDiv.id = "latest-message";
   }
 
-  messageElement.querySelector(".sender").textContent = `${sender}:`;
+  const isUser = sender === "Bruger";
+  const messageContainer = messageElement.querySelector(".message-container");
+  const senderIcon = messageElement.querySelector(".sender-icon");
+
+  // Add appropriate class based on sender
+  if (isUser) {
+    messageContainer.classList.add("user-message");
+    senderIcon.textContent = "👤";
+  } else {
+    messageContainer.classList.add("bot-message");
+    senderIcon.textContent = "🤖";
+  }
+
+  messageElement.querySelector(".sender").textContent = sender;
   messageElement.querySelector(".category-tag").innerHTML = categoryTag;
   messageElement.querySelector(".timestamp").textContent = timestamp;
   messageElement.querySelector(".message-text").textContent = text;
@@ -42,22 +54,27 @@ function createMessageElement(
 // Function to update the UI with the API data...
 function updateUI(data) {
   const chatMessages = document.getElementById("chat-messages");
+  const welcomeSection = document.getElementById("welcome-section");
+  const chatArea = document.getElementById("chat-area");
 
   const messages = data.data || [];
   const totalMessages = data.pagination ? data.pagination.totalMessages : 0;
 
+  // Show/hide welcome section based on messages
   if (messages.length === 0) {
-    chatMessages.innerHTML = "<p class='text-center text-gray-500'>Ingen beskeder endnu. Start en samtale!</p>";
+    welcomeSection.classList.remove("hidden");
+    chatArea.classList.add("hidden");
   } else {
+    welcomeSection.classList.add("hidden");
+    chatArea.classList.remove("hidden");
+
     chatMessages.innerHTML = "";
 
     messages.forEach((message, index) => {
-      const isUser = message.sender === "Bruger";
-      const senderClass = isUser ? "bg-blue-100 ml-4" : "bg-gray-100 mr-4";
       const isLatest = index === messages.length - 1;
       const categoryTag =
         message.category && message.sender === "Bot"
-          ? `<span class="px-2 py-1 text-xs text-blue-800 bg-blue-200 rounded-lg">${message.category}</span>`
+          ? `<span class="px-2 py-1 text-xs text-blue-800 bg-blue-200 rounded-full">${message.category}</span>`
           : "";
 
       const timestamp = new Date(message.date).toLocaleTimeString("da-DK");
@@ -68,7 +85,6 @@ function updateUI(data) {
         message.text,
         timestamp,
         categoryTag,
-        senderClass,
         message.category || "ukategoriseret",
         isLatest
       );
@@ -81,13 +97,13 @@ function updateUI(data) {
       ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  // Calculate stats from messages
-  const userCount = messages.filter((msg) => msg.sender === "Bruger").length;
-  const botCount = messages.filter((msg) => msg.sender === "Bot").length;
-
-  document.getElementById("total-messages").textContent = totalMessages;
-  document.getElementById("user-count").textContent = userCount;
-  document.getElementById("bot-count").textContent = botCount;
+  // Update stats in welcome section
+  const totalMessagesWelcome = document.getElementById(
+    "total-messages-welcome"
+  );
+  if (totalMessagesWelcome) {
+    totalMessagesWelcome.textContent = totalMessages;
+  }
 }
 
 // Function to show the messages...
@@ -135,41 +151,10 @@ chatForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Post request to the API to add a new response...
-const responseForm = document.getElementById("response-form");
-
-responseForm.addEventListener("submit", async function (e) {
-  e.preventDefault();
-  const keyword = document.getElementById("keyword").value.trim();
-  const answer = document.getElementById("answer").value.trim();
-
-  const response = await fetch(`${API_BASE_URL}/api/responses`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ keyword, answer }),
-  });
-
-  if (!response.ok) {
-    showMessage("error", `Server fejl: ${response.status}`);
-    return;
-  }
-
-  const data = await response.json();
-
-  if (data.error) {
-    showMessage("error", "Både nøgleord og svar skal udfyldes!");
-  } else {
-    showMessage(
-      "success",
-      "Nyt svar tilføjet! Prøv at skrive nøgleordet i chatten."
-    );
-    document.getElementById("keyword").value = "";
-    document.getElementById("answer").value = "";
-  }
-});
+// Response form functionality moved to admin.html
 
 // Delete request to the API to clear the messages...
-document.getElementById("clear-button").addEventListener("click", async () => {
+const clearMessages = async () => {
   const response = await fetch(`${API_BASE_URL}/api/messages`, {
     method: "DELETE",
   });
@@ -178,6 +163,46 @@ document.getElementById("clear-button").addEventListener("click", async () => {
     return;
   }
   loadMessages();
+};
+
+// Handle both desktop and mobile clear buttons
+document
+  .getElementById("clear-button")
+  .addEventListener("click", clearMessages);
+const clearButtonMobile = document.getElementById("clear-button-mobile");
+if (clearButtonMobile) {
+  clearButtonMobile.addEventListener("click", clearMessages);
+}
+
+// Add click handlers for suggestion cards
+document.addEventListener("DOMContentLoaded", function () {
+  const suggestionCards = document.querySelectorAll(".suggestion-card");
+  const messageInput = document.getElementById("message-input");
+
+  suggestionCards.forEach((card) => {
+    card.addEventListener("click", function () {
+      const title = this.querySelector(".font-medium").textContent;
+      let suggestedMessage = "";
+
+      switch (title) {
+        case "Sig hej":
+          suggestedMessage = "Hej!";
+          break;
+        case "Spørg om mad":
+          suggestedMessage = "Hvad kan du anbefale at spise?";
+          break;
+        case "Vejret":
+          suggestedMessage = "Hvordan er vejret?";
+          break;
+        case "Stil spørgsmål":
+          suggestedMessage = "Hvad kan du hjælpe mig med?";
+          break;
+      }
+
+      messageInput.value = suggestedMessage;
+      messageInput.focus();
+    });
+  });
 });
 
 document.getElementById("message-input").focus();

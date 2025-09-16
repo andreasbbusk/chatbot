@@ -1,11 +1,147 @@
-body {
-    overscroll-behavior: none;
+* {
+    transition: all 0.2s ease;
 }
 
-.no-scrollbar { 
-    scrollbar-width: none; 
-    -ms-overflow-style: none; 
+body {
+    overscroll-behavior: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
-.no-scrollbar::-webkit-scrollbar { 
-    display: none; 
+
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+#chat-area {
+    min-height: 0;
+}
+
+#chat-messages {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+
+input:focus,
+button:focus {
+    outline: none;
+}
+
+.suggestion-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.message-layout {
+    max-width: 100%;
+    gap: 0.75rem;
+}
+
+.message-bubble {
+    position: relative;
+    word-wrap: break-word;
+    min-width: 60px;
+    max-width: 300px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.message-container.bot-message {
+    justify-content: flex-start;
+}
+
+.message-container.bot-message .message-bubble {
+    background-color: rgb(243, 244, 246);
+    color: rgb(31, 41, 55);
+    border-bottom-left-radius: 0.25rem;
+}
+
+.message-container.bot-message .sender-avatar {
+    background-color: rgb(229, 231, 235);
+    color: rgb(75, 85, 99);
+}
+
+.message-container.user-message {
+    justify-content: flex-end;
+}
+
+.message-container.user-message .message-layout {
+    flex-direction: row-reverse;
+}
+
+.message-header {
+    gap: 0.75rem;
+}
+
+.message-container.bot-message .message-header {
+    gap: 0.75rem;
+}
+
+.message-container.user-message .message-header {
+    flex-direction: row-reverse;
+    gap: 0.75rem
+}
+
+.message-container.user-message .timestamp {
+    text-align: right;
+}
+
+
+.message-container.user-message .message-bubble {
+    background-color: rgb(59, 130, 246);
+    color: white;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.message-container.user-message .sender-avatar {
+    background-color: rgb(37, 99, 235);
+    color: white;
+}
+
+
+@keyframes slideInFromBottom {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#chat-messages>div:last-child {
+    animation: slideInFromBottom 0.3s ease-out;
+}
+
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
 }
