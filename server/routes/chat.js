@@ -1,31 +1,74 @@
 import express from "express";
+import fs from "fs/promises";
+import { randomUUID } from "crypto";
 import responses from "../data/responses.js";
 import { generateBotResponse } from "../services/chatLogic.js";
-import { sanitizeInput, validateChatMessage } from "../utilities/inputHelpers.js";
+import {
+  sanitizeInput,
+  validateChatMessage,
+} from "../utilities/inputHelpers.js";
 
 const router = express.Router();
 
-let messages = [];
-
-router.get("/messages", (req, res) => {
+// Helper functions
+async function readMessages() {
   try {
+    const data = await fs.readFile("./data/messages.json", "utf-8");
+    const messages = JSON.parse(data);
+    return messages;
+  } catch (error) {
+    // If file doesn't exist or is empty, return empty array
+    return [];
+  }
+}
+
+async function writeMessages(messages) {
+  await fs.writeFile("./data/messages.json", JSON.stringify(messages, null, 2));
+}
+
+router.get("/messages", async (req, res) => {
+  try {
+    let messages = await readMessages();
+
+    if (req.query.search) {
+      const searchTerm = req.query.search.toLowerCase();
+      messages = messages.filter((message) =>
+        message.text.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    if (req.query.sort === "date") {
+      messages = messages.sort((a, b) => new Date(a.date) - new Date(b.date));
+    } else if (req.query.sort === "-date") {
+      messages = messages.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || messages.length;
+
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    const paginatedMessages = messages.slice(start, end);
+
     const totalMessages = messages.length;
-    const userCount = messages.filter((msg) => msg.sender === "Bruger").length;
-    const botCount = messages.filter((msg) => msg.sender === "Bot").length;
-    
-    res.status(200).json({
-      messages,
-      totalMessages,
-      userCount,
-      botCount
+    const totalPages = Math.ceil(totalMessages / limit);
+
+    res.json({
+      pagination: {
+        currentpage: page,
+        totalPages: totalPages,
+        limit: limit,
+        totalMessages: totalMessages,
+      },
+      data: paginatedMessages,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Server error" });
   }
 });
 
-router.post("/messages", (req, res) => {
+router.post("/messages", async (req, res) => {
   try {
     if (!req.body.message) {
       return res.status(400).json({ error: "Message is required" });
@@ -50,22 +93,29 @@ router.post("/messages", (req, res) => {
       matchedCategory = responseData.matchedCategory;
     }
 
-    messages.push({
-      sender: "Bruger",
+    const messages = await readMessages();
+
+    const userMessageObj = {
+      id: randomUUID(),
+      date: new Date().toISOString(),
       text: userMessage,
+      sender: "Bruger",
       timestamp: userTimestamp,
       category: "bruger-input",
-    });
-    messages.push({
-      sender: "Bot",
+    };
+
+    const botMessageObj = {
+      id: randomUUID(),
+      date: new Date().toISOString(),
       text: botReply,
+      sender: "Bot",
       timestamp: botTimestamp,
       category: matchedCategory,
-    });
+    };
 
-    while (messages.length > 20) {
-      messages.shift();
-    }
+    messages.push(userMessageObj, botMessageObj);
+
+    await writeMessages(messages);
 
     const totalMessages = messages.length;
     const userCount = messages.filter((msg) => msg.sender === "Bruger").length;
@@ -76,7 +126,7 @@ router.post("/messages", (req, res) => {
       botReply,
       totalMessages,
       userCount,
-      botCount
+      botCount,
     });
   } catch (error) {
     console.error(error);
@@ -84,9 +134,10 @@ router.post("/messages", (req, res) => {
   }
 });
 
-router.delete("/messages", (req, res) => {
+// Clear all messages
+router.delete("/messages", async (req, res) => {
   try {
-    messages.length = 0;
+    await writeMessages([]);
     res.status(200).json({ success: true });
   } catch (error) {
     console.error(error);
@@ -94,43 +145,60 @@ router.delete("/messages", (req, res) => {
   }
 });
 
-// Post new responses
-router.post("/responses", (req, res) => {
+
+// Individual message operations - kept for possible future implementation
+// Currently not used in the chatbot
+
+// Update individual message by ID
+router.put("/messages/:id", async (req, res) => {
   try {
-    const { keyword, answer } = req.body;
+    const messages = await readMessages();
+    const messageId = req.params.id;
+    const message = messages.find((message) => message.id === messageId);
 
-    if (!keyword || !answer || !keyword.trim() || !answer.trim()) {
-      return res.status(400).json({ error: "Both 'keyword' and 'answer' must be provided" });
+    if (!message) {
+      return res.status(404).json({ error: "Besked ikke fundet." });
     }
 
-    const cleanKeyword = keyword.trim().toLowerCase();
-    const cleanAnswer = answer.trim();
+    const { text, sender } = req.body;
 
-    const existingResponse = responses.find((res) =>
-      res.keywords.some((kw) => kw === cleanKeyword)
-    );
-
-    if (existingResponse) {
-      existingResponse.answers.push(cleanAnswer);
-    } else {
-      responses.push({
-        keywords: [cleanKeyword],
-        answers: [cleanAnswer],
-        category: "bruger-lært",
-      });
+    if (!text || !sender) {
+      return res.status(400).json({ error: "Text og sender er påkrævet." });
     }
 
-    global.userLearnedResponses = global.userLearnedResponses || [];
-    global.userLearnedResponses.push({
-      keyword: cleanKeyword,
-      answer: cleanAnswer,
-      timestamp: new Date(),
+    message.text = text;
+    message.sender = sender;
+    await writeMessages(messages);
+    res.json({
+      success: "Besked opdateret succesfuldt",
+      message,
     });
-
-    res.status(201).json({ success: "response_added" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: "Server fejl" });
+  }
+});
+
+// Delete individual message by ID
+router.delete("/messages/:id", async (req, res) => {
+  try {
+    const messages = await readMessages();
+    const messageId = req.params.id;
+    const messageIndex = messages.findIndex((m) => m.id === messageId);
+
+    if (messageIndex === -1) {
+      return res.status(404).json({ error: "Besked ikke fundet." });
+    }
+
+    const deletedMessage = messages[messageIndex];
+    messages.splice(messageIndex, 1);
+    await writeMessages(messages);
+
+    res.json({
+      message: "Besked slettet succesfuldt",
+      deletedMessage,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Server fejl" });
   }
 });
 

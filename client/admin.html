@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="da">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-gray-50 h-screen flex">
+    <!-- Sidebar - Hidden on mobile, shown on desktop -->
+    <aside class="hidden md:flex w-64 bg-white border-r border-gray-200 flex-col">
+        <!-- Sidebar Header -->
+        <div class="p-6 border-b border-gray-200">
+            <h1 class="text-xl font-semibold text-gray-800">Mr. Chatbot</h1>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 p-4">
+            <div class="space-y-2">
+                <a href="index.html"
+                    class="w-full flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                        </path>
+                    </svg>
+                    Chat
+                </a>
+
+                <a href="admin.html"
+                    class="w-full flex items-center px-3 py-2 text-sm text-white bg-blue-600 rounded-lg">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+                        </path>
+                    </svg>
+                    Tilføj svar til botten
+                </a>
+
+                <a href="stats.html"
+                    class="w-full flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                    Statistikker
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main content area -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Mobile header -->
+        <header class="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200">
+            <h1 class="text-xl font-semibold text-gray-800">Admin Panel</h1>
+            <div class="flex items-center space-x-2">
+                <a href="index.html"
+                    class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                        </path>
+                    </svg>
+                </a>
+                <a href="stats.html"
+                    class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto">
+            <div class="max-w-4xl mx-auto p-4 md:p-8">
+
+                <!-- Welcome section with admin overview -->
+                <div class="flex flex-col items-center justify-center mb-8">
+                    <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Admin Panel</h2>
+                    <p class="text-gray-600 text-center mb-8 max-w-md">Lær Mr. Chatbot noget nyt og se hvilke emner
+                        der allerede er tilgængelige.</p>
+                </div>
+
+                <!-- Add New Response Section -->
+                <section class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+                    <div class="mb-6">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-800">Lær botten noget nyt!</h2>
+                            <p class="text-gray-600">Tilføj nye nøgleord og svar til chatbotten</p>
+                        </div>
+                    </div>
+
+                    <!-- Success/Error messages -->
+                    <div id="success-message"
+                        class="hidden p-3 mb-4 text-green-800 bg-green-100 rounded-lg border border-green-400">
+                        <strong>Succes:</strong> <span id="success-text"></span>
+                    </div>
+                    <div id="error-message"
+                        class="hidden p-3 mb-4 text-red-800 bg-red-100 rounded-lg border border-red-400">
+                        <strong>Fejl:</strong> <span id="error-text"></span>
+                    </div>
+
+                    <!-- Add response form -->
+                    <form id="response-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="keyword" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Nøgleord
+                                </label>
+                                <input type="text" id="keyword" placeholder="fx 'kage' eller 'computere'" required
+                                    maxlength="50"
+                                    class="text-sm w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                                <p class="mt-1 text-sm text-gray-500">Ordet som skal trigger svaret</p>
+                            </div>
+                            <div>
+                                <label for="answer" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Svar
+                                </label>
+                                <input type="text" id="answer" placeholder="fx 'Jeg elsker chokoladekage!'" required
+                                    maxlength="200"
+                                    class="text-sm w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors" />
+                                <p class="mt-1 text-sm text-gray-500">Hvad botten skal svare når ordet bruges</p>
+                            </div>
+                        </div>
+                        <button type="submit"
+                            class="w-full md:w-auto text-sm px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                            Tilføj nyt svar
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Current Categories Section -->
+                <section class="bg-white rounded-lg border border-gray-200 p-6">
+                    <div class="mb-6">
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-800">Aktuelle kategorier</h2>
+                            <p class="text-gray-600">Emner som botten kan snakke om</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        <div class="flex items-center p-3 rounded-lg border border-gray-300">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                            <span class="text-sm font-medium text-gray-800">Hilsner</span>
+                        </div>
+                        <div class="flex items-center p-3 rounded-lg border border-gray-300">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                            <span class="text-sm font-medium text-gray-800">Mad & drikke</span>
+                        </div>
+                        <div class="flex items-center p-3 rounded-lg border border-gray-300">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                            <span class="text-sm font-medium text-gray-800">Følelser</span>
+                        </div>
+                        <div class="flex items-center p-3 rounded-lg border border-gray-300">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                            <span class="text-sm font-medium text-gray-800">Spørgsmål</span>
+                        </div>
+                        <div class="flex items-center p-3 rounded-lg border border-gray-300">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                            <span class="text-sm font-medium text-gray-800">Komplimenter</span>
+                        </div>
+                        <div class="flex items-center p-3 rounded-lg border border-gray-300">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                            <span class="text-sm font-medium text-gray-800">Vejr</span>
+                        </div>
+                        <div class="flex items-center p-3 rounded-lg border border-gray-300">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                            <span class="text-sm font-medium text-gray-800">Hobbyer</span>
+                        </div>
+                        <div class="flex items-center p-3 rounded-lg border border-gray-300">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                            <span class="text-sm font-medium text-gray-800">Høflighed</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
