@@ -42,20 +42,26 @@ function createMessageElement(
 // Function to update the UI with the API data...
 function updateUI(data) {
   const chatMessages = document.getElementById("chat-messages");
-  if (data.messages.length === 0) {
-    chatMessages.innerHTML;
+
+  const messages = data.data || [];
+  const totalMessages = data.pagination ? data.pagination.totalMessages : 0;
+
+  if (messages.length === 0) {
+    chatMessages.innerHTML = "<p class='text-center text-gray-500'>Ingen beskeder endnu. Start en samtale!</p>";
   } else {
     chatMessages.innerHTML = "";
 
-    data.messages.forEach((message, index) => {
+    messages.forEach((message, index) => {
       const isUser = message.sender === "Bruger";
       const senderClass = isUser ? "bg-blue-100 ml-4" : "bg-gray-100 mr-4";
-      const isLatest = index === data.messages.length - 1;
+      const isLatest = index === messages.length - 1;
       const categoryTag =
         message.category && message.sender === "Bot"
           ? `<span class="px-2 py-1 text-xs text-blue-800 bg-blue-200 rounded-lg">${message.category}</span>`
           : "";
-      const timestamp = new Date(message.timestamp).toLocaleTimeString("da-DK");
+
+      const timestamp = new Date(message.date).toLocaleTimeString("da-DK");
+
       // Create the message element to populate HTML with API data...
       const messageElement = createMessageElement(
         message.sender,
@@ -75,9 +81,13 @@ function updateUI(data) {
       ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  document.getElementById("total-messages").textContent = data.totalMessages;
-  document.getElementById("user-count").textContent = data.userCount;
-  document.getElementById("bot-count").textContent = data.botCount;
+  // Calculate stats from messages
+  const userCount = messages.filter((msg) => msg.sender === "Bruger").length;
+  const botCount = messages.filter((msg) => msg.sender === "Bot").length;
+
+  document.getElementById("total-messages").textContent = totalMessages;
+  document.getElementById("user-count").textContent = userCount;
+  document.getElementById("bot-count").textContent = botCount;
 }
 
 // Function to show the messages...
@@ -103,12 +113,12 @@ chatForm.addEventListener("submit", async (e) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message }),
   });
-  
+
   if (!response.ok) {
     showMessage("error", `Server fejl: ${response.status}`);
     return;
   }
-  
+
   const data = await response.json();
 
   if (data.error) {
@@ -119,8 +129,9 @@ chatForm.addEventListener("submit", async (e) => {
         : data.error
     );
   } else {
-    updateUI(data);
+    // Reload messages using the GET endpoint to get the new format
     messageInput.value = "";
+    await loadMessages();
   }
 });
 
@@ -137,12 +148,12 @@ responseForm.addEventListener("submit", async function (e) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ keyword, answer }),
   });
-  
+
   if (!response.ok) {
     showMessage("error", `Server fejl: ${response.status}`);
     return;
   }
-  
+
   const data = await response.json();
 
   if (data.error) {
@@ -159,7 +170,9 @@ responseForm.addEventListener("submit", async function (e) {
 
 // Delete request to the API to clear the messages...
 document.getElementById("clear-button").addEventListener("click", async () => {
-  const response = await fetch(`${API_BASE_URL}/api/messages`, { method: "DELETE" });
+  const response = await fetch(`${API_BASE_URL}/api/messages`, {
+    method: "DELETE",
+  });
   if (!response.ok) {
     showMessage("error", `Fejl ved sletning: ${response.status}`);
     return;
