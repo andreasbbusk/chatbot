@@ -1,1 +1,114 @@
-[]
+[
+  {
+    "id": "7c67eb7e-7cc9-45c4-b386-ad2757f153ef",
+    "date": "2025-09-16T13:44:14.126Z",
+    "text": "Hvordan er vejret?",
+    "sender": "Bruger",
+    "timestamp": 1758030254126,
+    "category": "bruger-input"
+  },
+  {
+    "id": "e4ee2020-bd02-4efc-8146-7848313b1de6",
+    "date": "2025-09-16T13:44:14.126Z",
+    "text": "Vejr er et evigt samtaleemne. Hvad foretrækker du?",
+    "sender": "Bot",
+    "timestamp": 1758030254126,
+    "category": "vejr"
+  },
+  {
+    "id": "0db31b08-391c-4848-8773-c7cdf9ce2430",
+    "date": "2025-09-16T13:44:50.397Z",
+    "text": "ddd",
+    "sender": "Bruger",
+    "timestamp": 1758030290396,
+    "category": "bruger-input"
+  },
+  {
+    "id": "8bed5636-4a0e-4c1a-9777-027d6d842ea7",
+    "date": "2025-09-16T13:44:50.397Z",
+    "text": "Hmm, \"ddd\" er nyt for mig. Prøv \"hej\", \"hjælp\" eller stil et spørgsmål! 💭",
+    "sender": "Bot",
+    "timestamp": 1758030290396,
+    "category": "ukategoriseret"
+  },
+  {
+    "id": "f33ab320-bc6d-4e3a-bd11-863cac144dc3",
+    "date": "2025-09-16T13:44:52.510Z",
+    "text": "ddsd",
+    "sender": "Bruger",
+    "timestamp": 1758030292510,
+    "category": "bruger-input"
+  },
+  {
+    "id": "86eb0d45-9975-4bd7-b4eb-cab940eacd42",
+    "date": "2025-09-16T13:44:52.510Z",
+    "text": "Hmm, \"ddsd\" er nyt for mig. Prøv \"hej\", \"hjælp\" eller stil et spørgsmål! 💭",
+    "sender": "Bot",
+    "timestamp": 1758030292510,
+    "category": "ukategoriseret"
+  },
+  {
+    "id": "6978c75a-b850-4674-9cd5-6e5131b92f5e",
+    "date": "2025-09-16T13:44:54.065Z",
+    "text": "dsdsd",
+    "sender": "Bruger",
+    "timestamp": 1758030294064,
+    "category": "bruger-input"
+  },
+  {
+    "id": "f3934b62-6a16-4d15-a40a-037931108832",
+    "date": "2025-09-16T13:44:54.065Z",
+    "text": "Hmm, \"dsdsd\" er nyt for mig. Prøv \"hej\", \"hjælp\" eller stil et spørgsmål! 💭",
+    "sender": "Bot",
+    "timestamp": 1758030294064,
+    "category": "ukategoriseret"
+  },
+  {
+    "id": "e073b42c-e3cb-4486-b34e-44228236f721",
+    "date": "2025-09-16T13:44:55.479Z",
+    "text": "dsds",
+    "sender": "Bruger",
+    "timestamp": 1758030295478,
+    "category": "bruger-input"
+  },
+  {
+    "id": "6e1ee49a-3e7a-40a0-8316-88010cafbdf1",
+    "date": "2025-09-16T13:44:55.479Z",
+    "text": "Hmm, \"dsds\" er nyt for mig. Prøv \"hej\", \"hjælp\" eller stil et spørgsmål! 💭",
+    "sender": "Bot",
+    "timestamp": 1758030295478,
+    "category": "ukategoriseret"
+  },
+  {
+    "id": "b12392e0-0bab-4bce-9880-805f800a0b11",
+    "date": "2025-09-16T13:44:59.782Z",
+    "text": "dsdsd",
+    "sender": "Bruger",
+    "timestamp": 1758030299781,
+    "category": "bruger-input"
+  },
+  {
+    "id": "b87cb72d-075a-488f-8158-1d4f2c17dd0c",
+    "date": "2025-09-16T13:44:59.782Z",
+    "text": "Hmm, \"dsdsd\" er nyt for mig. Prøv \"hej\", \"hjælp\" eller stil et spørgsmål! 💭",
+    "sender": "Bot",
+    "timestamp": 1758030299781,
+    "category": "ukategoriseret"
+  },
+  {
+    "id": "f05a22a8-b46c-45e5-a0a4-36fe870cb78b",
+    "date": "2025-09-16T13:45:01.405Z",
+    "text": "dsds",
+    "sender": "Bruger",
+    "timestamp": 1758030301405,
+    "category": "bruger-input"
+  },
+  {
+    "id": "3b5a6d2f-8ae3-4a02-8bb0-c0de0167ed36",
+    "date": "2025-09-16T13:45:01.405Z",
+    "text": "Hmm, \"dsds\" er nyt for mig. Prøv \"hej\", \"hjælp\" eller stil et spørgsmål! 💭",
+    "sender": "Bot",
+    "timestamp": 1758030301405,
+    "category": "ukategoriseret"
+  }
+]
