@@ -12,17 +12,9 @@ async function loadMessages() {
 
 // This function is used to create the different message elements to populate HTML with API data ...
 // ... This approach is used for seperation of concerns and to make the code more readable.
-function createMessageElement(
-  sender,
-  text,
-  timestamp,
-  categoryTag,
-  category,
-  isLatest
-) {
+function createMessageElement(sender, text, timestamp, categoryTag, category, isLatest) {
   const template = document.getElementById("message-template");
   const messageElement = template.content.cloneNode(true);
-
   const messageDiv = messageElement.querySelector("div");
   messageDiv.className += ` category-${category}`;
 
@@ -58,7 +50,6 @@ function updateUI(data) {
   const chatArea = document.getElementById("chat-area");
 
   const messages = data.data || [];
-  const totalMessages = data.pagination ? data.pagination.totalMessages : 0;
 
   // Show/hide welcome section based on messages
   if (messages.length === 0) {
@@ -72,10 +63,7 @@ function updateUI(data) {
 
     messages.forEach((message, index) => {
       const isLatest = index === messages.length - 1;
-      const categoryTag =
-        message.category && message.sender === "Bot"
-          ? `<span class="px-2 py-1 text-xs text-blue-800 bg-blue-200 rounded-full">${message.category}</span>`
-          : "";
+      const categoryTag = message.category && message.sender === "Bot" ? `<span class="px-2 py-1 text-xs text-blue-800 bg-blue-200 rounded-full">${message.category}</span>` : "";
 
       const timestamp = new Date(message.date).toLocaleTimeString("da-DK");
 
@@ -92,17 +80,7 @@ function updateUI(data) {
       chatMessages.appendChild(messageElement);
     });
 
-    document
-      .getElementById("latest-message")
-      ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
-
-  // Update stats in welcome section
-  const totalMessagesWelcome = document.getElementById(
-    "total-messages-welcome"
-  );
-  if (totalMessagesWelcome) {
-    totalMessagesWelcome.textContent = totalMessages;
+    document.getElementById("latest-message")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 }
 
@@ -166,9 +144,7 @@ const clearMessages = async () => {
 };
 
 // Handle both desktop and mobile clear buttons
-document
-  .getElementById("clear-button")
-  .addEventListener("click", clearMessages);
+document.getElementById("clear-button").addEventListener("click", clearMessages);
 const clearButtonMobile = document.getElementById("clear-button-mobile");
 if (clearButtonMobile) {
   clearButtonMobile.addEventListener("click", clearMessages);
