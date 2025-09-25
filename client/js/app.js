@@ -1,13 +1,26 @@
 const API_BASE_URL = "http://localhost:3000";
 
 async function loadMessages() {
-  const response = await fetch(`${API_BASE_URL}/api/messages`);
-  if (!response.ok) {
-    console.error(`Failed to load messages: ${response.status}`);
-    return;
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/messages`);
+    
+    if (!response.ok) {
+      throw new Error(`Server responded with status ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    updateUI(data);
+  } catch (error) {
+    console.error('Failed to load messages:', error);
+    
+    if (error.name === 'TypeError' || error.message.includes('fetch')) {
+      showMessage("error", "Kan ikke oprette forbindelse til serveren. Tjek din internetforbindelse.");
+    } else if (error.name === 'SyntaxError') {
+      showMessage("error", "Fejl ved behandling af serverdata.");
+    } else {
+      showMessage("error", `Fejl ved indlæsning af beskeder: ${error.message}`);
+    }
   }
-  const data = await response.json();
-  updateUI(data);
 }
 
 // This function is used to create the different message elements to populate HTML with API data ...
@@ -102,30 +115,33 @@ chatForm.addEventListener("submit", async (e) => {
 
   if (!message) return;
 
-  const response = await fetch(`${API_BASE_URL}/api/messages`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/messages`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    });
 
-  if (!response.ok) {
-    showMessage("error", `Server fejl: ${response.status}`);
-    return;
-  }
+    if (!response.ok) {
+      throw new Error(`Server fejl: ${response.status}`);
+    }
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (data.error) {
-    showMessage(
-      "error",
-      data.error === "empty_fields"
-        ? "Både nøgleord og svar skal udfyldes!"
-        : data.error
-    );
-  } else {
-    // Reload messages using the GET endpoint to get the new format
-    messageInput.value = "";
-    await loadMessages();
+    if (data.error) {
+      showMessage(
+        "error",
+        data.error === "empty_fields"
+          ? "Både nøgleord og svar skal udfyldes!"
+          : data.error
+      );
+    } else {
+      messageInput.value = "";
+      await loadMessages();
+    }
+  } catch (error) {
+    console.error('Failed to send message:', error);
+    showMessage("error", error.message || "Fejl ved afsendelse af besked");
   }
 });
 
@@ -133,14 +149,20 @@ chatForm.addEventListener("submit", async (e) => {
 
 // Delete request to the API to clear the messages...
 const clearMessages = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/messages`, {
-    method: "DELETE",
-  });
-  if (!response.ok) {
-    showMessage("error", `Fejl ved sletning: ${response.status}`);
-    return;
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/messages`, {
+      method: "DELETE",
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Fejl ved sletning: ${response.status}`);
+    }
+    
+    await loadMessages();
+  } catch (error) {
+    console.error('Failed to clear messages:', error);
+    showMessage("error", error.message || "Fejl ved sletning af beskeder");
   }
-  loadMessages();
 };
 
 // Handle both desktop and mobile clear buttons
